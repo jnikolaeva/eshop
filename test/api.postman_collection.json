@@ -1,0 +1,170 @@
+{
+	"info": {
+		"_postman_id": "9cebfcbb-8ed5-4373-b1ae-90c7e9f1027e",
+		"name": "EShop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "catalog",
+			"item": [
+				{
+					"name": "Add Catalog Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f42476d1-fa0c-4f21-8c25-f1a863d0b6eb",
+								"exec": [
+									"pm.test(\"test catalog item is created\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    var responseJSON = JSON.parse(responseBody)",
+									"    pm.collectionVariables.set(\"id\", responseJSON[\"id\"])",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "aaef74b4-341e-440f-bc71-c96d4d7ccd06",
+								"exec": [
+									"pm.collectionVariables.set(\"availableQty\", pm.variables.replaceIn('{{$randomInt}}') % 10);",
+									"pm.collectionVariables.set(\"imageUrl\", \"http://eshop/images/\" + pm.variables.replaceIn('{{$randomUUID}}'));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"{{$randomProductName}}\",\n    \"sku\": \"{{$randomBankAccount}}\",\n    \"price\": \"{{$randomPrice}}\",\n    \"available_qty\": {{availableQty}},\n    \"image\": {\n      \"url\": \"{{imageUrl}}\",\n      \"width\": 400,\n      \"height\": 600\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/catalog",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"catalog"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Catalog Items",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2960c7e4-5863-40e5-a6ac-38dd2dc88798",
+								"exec": [
+									"pm.test(\"test list catalog items\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.items).to.not.be.empty;",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/catalog",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"catalog"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Catalog Item by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5e9537cd-894e-4207-80ed-e43b17da7f68",
+								"exec": [
+									"pm.test(\"test getting catalog item info\", function () {",
+									"    pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/catalog/{{id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"catalog",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1a2ad26c-fd94-47bb-b19f-9ae4b47dc1f4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "42881a29-689c-48fa-8038-b58d1a9b8723",
+				"type": "text/javascript",
+				"exec": [
+					"tests[\"[INFO] Request: \" + (('data' in request) ? request['data'] : '')] = true;",
+					"tests[\"[INFO] Response: \" + responseBody] = true;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "b7e30340-d5d9-42bf-9104-9eafb801f592",
+			"key": "baseUrl",
+			"value": "arch.homework"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
