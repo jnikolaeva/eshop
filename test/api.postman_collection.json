@@ -9,7 +9,7 @@
 			"name": "catalog",
 			"item": [
 				{
-					"name": "Add Catalog Item",
+					"name": "Add Product",
 					"event": [
 						{
 							"listen": "test",
@@ -30,6 +30,9 @@
 							"script": {
 								"id": "aaef74b4-341e-440f-bc71-c96d4d7ccd06",
 								"exec": [
+									"pm.collectionVariables.set(\"price\", pm.variables.replaceIn('{{$randomPrice}}'));",
+									"pm.collectionVariables.set(\"color\", pm.variables.replaceIn('{{$randomColor}}'));",
+									"pm.collectionVariables.set(\"material\", pm.variables.replaceIn('{{$randomProductMaterial}}'));",
 									"pm.collectionVariables.set(\"availableQty\", pm.variables.replaceIn('{{$randomInt}}') % 10);",
 									"pm.collectionVariables.set(\"imageUrl\", \"http://eshop/images/\" + pm.variables.replaceIn('{{$randomUUID}}'));"
 								],
@@ -42,7 +45,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"{{$randomProductName}}\",\n    \"sku\": \"{{$randomBankAccount}}\",\n    \"price\": \"{{$randomPrice}}\",\n    \"available_qty\": {{availableQty}},\n    \"image\": {\n      \"url\": \"{{imageUrl}}\",\n      \"width\": 400,\n      \"height\": 600\n    }\n}",
+							"raw": "{\n    \"title\": \"{{$randomProductName}}\",\n    \"sku\": \"{{$randomBankAccount}}\",\n    \"price\": \"{{price}}\",\n    \"available_qty\": {{availableQty}},\n    \"image\": {\n      \"url\": \"{{imageUrl}}\",\n      \"width\": 400,\n      \"height\": 600\n    },\n    \"color\": \"{{color}}\",\n    \"material\": \"{{material}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -50,21 +53,22 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/catalog",
+							"raw": "{{baseUrl}}/api/v1/catalog/products",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"catalog"
+								"catalog",
+								"products"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "List Catalog Items",
+					"name": "List Products",
 					"event": [
 						{
 							"listen": "test",
@@ -85,21 +89,36 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/catalog",
+							"raw": "{{baseUrl}}/api/v1/catalog/products?price=0,300&color=pink,purple&material=Steel",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"catalog"
+								"catalog",
+								"products"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "0,300"
+								},
+								{
+									"key": "color",
+									"value": "pink,purple"
+								},
+								{
+									"key": "material",
+									"value": "Steel"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get Catalog Item by ID",
+					"name": "Get Product by ID",
 					"event": [
 						{
 							"listen": "test",
@@ -118,7 +137,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/catalog/{{id}}",
+							"raw": "{{baseUrl}}/api/v1/catalog/products/{{id}}",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -126,6 +145,7 @@
 								"api",
 								"v1",
 								"catalog",
+								"products",
 								"{{id}}"
 							]
 						}
@@ -161,7 +181,7 @@
 	],
 	"variable": [
 		{
-			"id": "b7e30340-d5d9-42bf-9104-9eafb801f592",
+			"id": "1ed390e1-fd17-4402-816e-a444b6a8afe3",
 			"key": "baseUrl",
 			"value": "arch.homework"
 		}
